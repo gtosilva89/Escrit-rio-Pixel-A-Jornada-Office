@@ -24,6 +24,18 @@ function baixarArq(nome,conteudo,tipo){const b=new Blob([conteudo],{type:tipo});
 function csvProf(AL){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const cab=['Aluno','Salvo em','Codigo','XP','Nivel','Nota sugerida',...LEVELS.map(l=>l.nome),...IND_K.map(k=>'C'+k),'Atencao',...BAT.map(b=>'Erros '+b.nome)];
  const rows=AL.map(S=>{const a=analisar(S);return[S.nome,S._data||'',S._cod||'',S.xp,nivel(S.xp)[1],a.nota.toFixed(1).replace('.',','),...a.fases.map(f=>f.jogou?f.feitos+'/'+f.total:''),...IND_K.map(k=>a.sug[k]),a.atencao.map(x=>x.conceito).join('; '),...BAT.map(b=>{const p=(S.P||{})[b.lv];if(!p)return'';return p.feito[b.id]?((p.erros||{})[b.id]||0):'não fez'})]});
  baixarArq('escritorio-pixel_turma.csv','﻿'+[cab,...rows].map(r=>r.map(q).join(';')).join('\r\n'),'text/csv')}
+// Ranking geral: XP das 5 fases (sem o XP-bônus do desafio) + pontos do Grande Desafio
+function xpFases(S){const d=S.dsf&&S.dsf.st==='fim'?S.dsf:null;return Math.max(0,(S.xp||0)-(d?100+d.ac*10:0))}
+function rankGeral(AL){return AL.map(S=>{const d=S.dsf&&S.dsf.st==='fim'?S.dsf:null;const a=analisar(S);const feitos=a.fases.reduce((t,f)=>t+f.feitos,0),total=a.fases.reduce((t,f)=>t+f.total,0);
+  return{S,xf:xpFases(S),dp:d?d.pts:0,tot:xpFases(S)+(d?d.pts:0),feitos,total,seg:d?d.seg:1e9}}).sort((x,y)=>y.tot-x.tot||y.feitos-x.feitos||x.seg-y.seg)}
+function csvGeral(AL){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const R=rankGeral(AL);
+ const rows=[['Posicao','Aluno','XP das fases','Pontos do desafio','Pontuacao geral','Lugares concluidos','Nivel'],...R.map((r,i)=>[i+1,r.S.nome,r.xf,r.dp,r.tot,r.feitos+'/'+r.total,nivel(r.S.xp)[1]])];
+ baixarArq('escritorio-pixel_ranking-geral.csv','\ufeff'+rows.map(r=>r.map(q).join(';')).join('\r\n'),'text/csv')}
+function codigosJogo(){const L=[['Fase','Liberar a fase','Portão','Chefão']];L.push(['0 • Grande Desafio',DSF_COD,'—','—']);
+ LEVELS.forEach((lv,i)=>{const lug=lv.fases.flatMap(f=>Object.values(f.lugares));const por=lug.filter(l=>l.tipo==='portao').map(l=>l.codigo).join(', ')||'—';const ch=lug.filter(l=>l.tipo==='chefao').map(l=>l.codigo).join(', ')||'—';
+  L.push([`${i+1} • ${lv.titulo}`,i===0?'(já vem aberta)':lv.codigo,por,ch])});
+ return el('details',{class:'perg',style:'background:#1a1533;color:inherit'},el('summary',{style:'cursor:pointer;font-size:19px'},'🔑 Códigos do jogo e senha (não mostrar aos alunos)'),
+  el('div',{class:'dica'},'Senha da Área do Professor e da planilha: '+senhaProf+'. Maiúsculas e minúsculas não fazem diferença. Quem termina uma fase libera a próxima sozinho; o código da fase serve para quem ficou para trás.'),tabelaEl(L))}
 function csvDesafio(AL){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const RK=AL.filter(S=>S.dsf&&S.dsf.st==='fim').sort((a,b)=>b.dsf.pts-a.dsf.pts||a.dsf.seg-b.dsf.seg);
  const rows=[['Posicao','Aluno','Acertos (de 30)','Pontos','Tempo (s)','Medalha','Concluido em',...Object.values(DESAFIO_AREA)],...RK.map((S,i)=>{const d=S.dsf;const pa={};for(const[id,ok]of d.r||[]){const a=(DSF_ID[id]||{}).a;pa[a]=pa[a]||[0,0];pa[a][1]++;if(ok)pa[a][0]++}
   return[i+1,S.nome,d.ac,d.pts,Math.round(d.seg),dsfMedalha(d.ac)[0],d.fim||'',...Object.keys(DESAFIO_AREA).map(a=>pa[a]?pa[a][0]+'/'+pa[a][1]:'')]})];
@@ -42,6 +54,7 @@ function painelProf(){const AL=alunosProf();const saida=el('div',{});
   NUVEM_URL?el('button',{type:'button',on:{click:atualizar}},'Atualizar da planilha ⟳'):null,
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>csvProf(AL)}},'Baixar planilha (CSV)'),
   el('button',{class:'sec',type:'button',disabled:AL.some(S=>S.dsf)?null:'',on:{click:()=>csvDesafio(AL)}},'Ranking do desafio (CSV)'),
+  el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>csvGeral(AL)}},'Ranking geral (CSV)'),
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>relTurmaProf(AL)}},'Relatório da turma'),
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>baixarArq('escritorio-pixel_registro.json',JSON.stringify(regLer()),'application/json')}},'Exportar registro'),
   el('button',{class:'sec',type:'button',on:{click:imp}},'Juntar registro de outro PC'));
@@ -57,7 +70,9 @@ function painelProf(){const AL=alunosProf();const saida=el('div',{});
   const errQ={};for(const S of RK)for(const[id,ok]of S.dsf.r||[]){errQ[id]=errQ[id]||[0,0];errQ[id][1]++;if(!ok)errQ[id][0]++}
   const topQ=Object.entries(errQ).filter(x=>x[1][0]>0).sort((x,y)=>y[1][0]-x[1][0]).slice(0,6);
   const blocoDsf=`<h3 class="ph">🏆 RANKING DO GRANDE DESAFIO (${RK.filter(S=>S.dsf.st==='fim').length} concluíram)</h3>`+(RK.length?`<div class="dica">Ordem: mais pontos; empate vai para o menor tempo de resposta. Pontos = 100 por acerto + bônus de rapidez (até 50 por questão).</div><div class="tbw"><table class="tb"><tr><th>#</th><th>Aluno</th><th>Acertos</th><th>Pontos</th><th>Tempo</th><th>Medalha</th><th>Concluído em</th></tr>${rk}</table></div>`+(topQ.length?'<div class="dica">Questões do desafio que a turma mais errou:</div><ol>'+topQ.map(([id,[e,t]])=>`<li>${escH((DSF_ID[id]||{}).q||id)} <span class="dica">(${e} de ${t} erraram)</span></li>`).join('')+'</ol>':''):'<p class="dica">Ninguém fez o desafio ainda.</p>');
-  saida.innerHTML=blocoDsf+`<h3 class="ph">TURMA (${AL.length} alunos)</h3><div class="tbw"><table class="tb"><tr><th>Aluno</th><th>Salvo em</th><th>Último código</th><th>XP</th><th>Nota</th>${LEVELS.map(l=>`<th>${l.nome}</th>`).join('')}${IND_K.map(k=>`<th>C${k}</th>`).join('')}<th>Atenção</th><th></th></tr>${linhas}</table></div>
+  const RG=rankGeral(AL);
+  const blocoGeral=`<h3 class="ph">🥇 RANKING GERAL (fases + desafio)</h3><div class="dica">Pontuação geral = XP ganho nas 5 fases (sem o bônus de XP do desafio, para não contar duas vezes) + pontos do Grande Desafio. Empate: mais lugares concluídos; depois, menor tempo no desafio.</div><div class="tbw"><table class="tb"><tr><th>#</th><th>Aluno</th><th>XP das fases</th><th>Pontos do desafio</th><th>Pontuação geral</th><th>Lugares concluídos</th></tr>${RG.map((r,i)=>`<tr><td class="num">${i+1}º</td><td>${escH(r.S.nome)}</td><td class="num">${r.xf}</td><td class="num">${r.S.dsf&&r.S.dsf.st==='fim'?r.dp:'não fez'}</td><td class="num"><b>${r.tot}</b></td><td class="num">${r.feitos}/${r.total}</td></tr>`).join('')}</table></div>`;
+  saida.innerHTML=blocoGeral+blocoDsf+`<h3 class="ph">TURMA (${AL.length} alunos)</h3><div class="tbw"><table class="tb"><tr><th>Aluno</th><th>Salvo em</th><th>Último código</th><th>XP</th><th>Nota</th>${LEVELS.map(l=>`<th>${l.nome}</th>`).join('')}${IND_K.map(k=>`<th>C${k}</th>`).join('')}<th>Atenção</th><th></th></tr>${linhas}</table></div>
   <h3 class="ph">BATALHAS QUE MAIS DERRUBARAM A TURMA</h3>${top.length?'<ol>'+top.map(([b,n])=>`<li>${escH(b.nome)} (${escH(b.conceito)}): ${n} erro(s) somados</li>`).join('')+'</ol>':'<p class="dica">Nenhum erro registrado.</p>'}
   <h3 class="ph">MAPA DE CALOR (erros por batalha)</h3><div class="dica">Verde = 0 ou 1 erro; laranja = 2 ou 3; vermelho = 4 ou mais; · = não concluída; escuro = fase não começada. Quem voltou por código aparece com 0, 2 ou 4+ (o código guarda a faixa).</div>
   <div class="tbw"><table class="tb calor"><tr><th>Aluno</th>${BAT.map(b=>`<th title="${escH(b.conceito)}">${escH(b.nome)}</th>`).join('')}</tr>${calor}</table></div>
@@ -67,6 +82,6 @@ function painelProf(){const AL=alunosProf();const saida=el('div',{});
  else saida.append(el('div',{class:'fala'},'Ninguém salvou neste computador ainda. Cole abaixo os nomes e códigos que os alunos anotaram.'));
  cena(el('h2',{},'Área do Professor • progresso da turma'),
   el('div',{class:'dica'},'Aparecem aqui os alunos da planilha online e os que salvaram neste computador. Para ver quem jogou em outro PC, cole o nome e o código que ele anotou (um por linha). Para juntar PCs: Exportar registro em cada um e Juntar registro no seu.'),
-  barra,nst,saida,el('h3',{class:'ph'},'ADICIONAR ALUNOS PELO CÓDIGO'),ta,el('div',{class:'fb',id:'fbProf',hidden:''}),
+  barra,nst,codigosJogo(),saida,el('h3',{class:'ph'},'ADICIONAR ALUNOS PELO CÓDIGO'),ta,el('div',{class:'fb',id:'fbProf',hidden:''}),
   el('div',{class:'acoes'},el('button',{class:'sec',type:'button',on:{click:()=>{profAberto=false;fechar();inicio()}}},'Sair da área (trancar)'),el('button',{type:'button',on:{click:add}},'Adicionar')));
  $('cena').classList.add('largo')}

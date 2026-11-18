@@ -21,12 +21,16 @@ function gerarCodigo(S){const b=[];pushN(b,3,3);pushN(b,S.av||0,2);pushN(b,Math.
  return c.match(/.{1,4}/g).join('-')}
 function lerCodigo(cod,nome){const t=String(cod||'').toUpperCase().replace(/[^0-9A-Z]/g,'').replace(/O/g,'0').replace(/I/g,'1');
  const tudo=[];for(const ch of t){const v=ALFA.indexOf(ch);if(v<0)return{erro:'O código tem uma letra ou número que não existe (confira 0/O, 1/I).'};pushN(tudo,v,5)}
- const L=lugaresCod();const nb=3+2+3+(LEVELS.length-1)+12+31+L.reduce((s,l)=>s+(l.tipo==='batalha'||l.tipo==='missoes'?2:1),0)+11;
+ // versão 3 = com o resultado do Desafio (31 bits a mais); versão 2 (antes de 18/11, 19h11) continua valendo
+ const L=lugaresCod();if(tudo.length<8)return{erro:'Código curto demais. Confira se copiou tudo.'};
+ const p0={i:0};const sal=readN(tudo,p0,5);let k=fluxo(sal);let ver=0;for(let i=0;i<3;i++)ver=(ver<<1)|(tudo[5+i]^k());
+ if(ver!==2&&ver!==3)return{erro:'Código de outra versão do jogo.'};
+ const nb=3+2+3+(LEVELS.length-1)+12+(ver===3?31:0)+L.reduce((s,l)=>s+(l.tipo==='batalha'||l.tipo==='missoes'?2:1),0)+11;
  if(tudo.length<5+nb)return{erro:'Código curto demais. Confira se copiou tudo.'};
- const p0={i:0};const sal=readN(tudo,p0,5);const k=fluxo(sal);const b=[];for(let i=0;i<nb;i++)b.push(tudo[5+i]^k());
- const p={i:0};const ver=readN(b,p,3);if(ver!==3)return{erro:'Código de outra versão do jogo.'};
+ k=fluxo(sal);const b=[];for(let i=0;i<nb;i++)b.push(tudo[5+i]^k());
+ const p={i:0};readN(b,p,3);
  const S={nome:nome,av:readN(b,p,2),lv:'',lib:{[LEVELS[0].id]:true},xp:0,vida:5,selos:[],P:{}};S.lv=(LEVELS[readN(b,p,3)]||LEVELS[0]).id;LEVELS.slice(1).forEach(l=>{if(readN(b,p,1))S.lib[l.id]=true});S.xp=readN(b,p,12)*2;
- {const f=readN(b,p,1),ac=readN(b,p,5),pts=readN(b,p,13),seg=readN(b,p,12);if(f){S.dsf={st:'fim',ac,pts,seg,r:[],ids:[],i:30,doCodigo:true};S.selos.push('desafiante')}}
+ if(ver===3){const f=readN(b,p,1),ac=readN(b,p,5),pts=readN(b,p,13),seg=readN(b,p,12);if(f){S.dsf={st:'fim',ac,pts,seg,r:[],ids:[],i:30,doCodigo:true};S.selos.push('desafiante')}}
  const est={};for(const l of L)est[l.lv+'/'+l.id]=l.tipo==='batalha'||l.tipo==='missoes'?readN(b,p,2):readN(b,p,1);
  const ck=readN(b,p,11);if(ck!==hashBits(b.slice(0,p.i-11),nome))return{erro:'Código não confere com este nome. Confira o nome (igual ao do dia em que salvou) e cada letra do código.'};
  for(const lv of LEVELS){const pr={feito:{},erros:{},abertos:{},missao:{},hist:{},pos:null,textos:{}};let algum=false;
