@@ -1,0 +1,32 @@
+// ===================== RELATÓRIO DE APRENDIZAGEM =====================
+const IND_TXT={1:'C1 • Word: layout de página, formatação de texto, ortografia, gramática e idioma, elementos estruturais, estilos e exportação (PDF).',
+ 2:'C2 • Excel: fórmulas, funções, porcentagem, referência absoluta, SE, CONT.SE, SOMASE, PROCV, erros e gráficos (trabalhado nas listas da turma).',
+ 3:'C3 • Outlook: conceitos, envio com cópias e anexos, senhas e segurança, pastas e filtros, contatos, agenda, recursos e compartilhamento.',
+ 4:'C4 • PowerPoint: modos de visualização, layouts e Slide Mestre, figuras e objetos, transições, impressão e apresentação.',
+ 5:'C5 • Competências profissionais: hard e soft skills, pesquisa com fonte confiável, uso crítico da IA e coerência da proposta do Edital.'};
+const IND_K=Object.keys(IND_TXT).map(Number);
+function analisar(S){const out={lugares:[],ind:Object.fromEntries(IND_K.map(k=>[k,[]])),textos:[],fases:[]};
+ for(const lv of LEVELS){const jogou=!!(S.P||{})[lv.id];const p=(S.P||{})[lv.id]||{feito:{},erros:{},missao:{},textos:{}};let tot=0,fe=0;
+  lv.fases.forEach((f,k)=>Object.entries(f.lugares).forEach(([id,l])=>{if(l.tipo==='portao')return;tot++;const feito=!!p.feito[id];if(feito)fe++;const er=(p.erros||{})[id]||0;
+   const conceito=l.card!=null?CARDS[l.card].t:l.nome;const nivel=!feito?'fraco':er<=1?'bom':er<=3?'medio':'fraco';
+   const it={fase:lv.nome,regiao:f.nome,id,nome:l.nome,conceito,tipo:l.tipo,feito,erros:er,nivel,ind:l.ind||[],jogou};out.lugares.push(it);if(jogou)(l.ind||[]).forEach(i=>out.ind[i].push(it));
+   if(l.tipo==='missoes'){const M=MISSOES[l.miss];M.lista.forEach((m,ix)=>{const v=(p.textos||{})[id+'#'+ix];if(m.tipo==='escrever')out.textos.push({fase:lv.nome,t:m.t,modo:m.modo,txt:v||'',ok:((p.missao||{})[id]||0)>ix})})}}));
+  out.fases.push({nome:lv.nome,titulo:lv.titulo,feitos:fe,total:tot,jogou})}
+ {const L=out.lugares.filter(x=>x.tipo!=='portao');const pts=L.reduce((t,x)=>t+(!x.feito?0:x.tipo!=='batalha'?1:x.erros<=1?1:x.erros<=3?0.8:0.6),0);out.nota=L.length?Math.round(pts/L.length*100)/10:0}
+ out.sug={};for(const i of IND_K){const L=out.ind[i];if(!L.length){out.sug[i]='—';continue}const feitos=L.filter(x=>x.feito).length,bons=L.filter(x=>x.nivel==='bom').length;
+  out.sug[i]=feitos===L.length&&bons/L.length>=0.7?'A':feitos/L.length>=0.5?'PA':'NA'}
+ out.atencao=out.lugares.filter(x=>x.jogou&&x.tipo==='batalha'&&(x.erros>=2||!x.feito)).sort((a,b)=>b.erros-a.erros).slice(0,4);
+ return out}
+const escH=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function relatorioHTML(S){const a=analisar(S);const n=nivel(S.xp);const cor={bom:'#1b7f3b',medio:'#b7791f',fraco:'#c53030'};const rot={bom:'domina',medio:'com dificuldade',fraco:'precisa retomar'};
+ return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório • ${escH(S.nome)}</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#1d2433}h1{color:#004f8b;margin:0}h2{color:#004f8b;border-bottom:2px solid #f39200;padding-bottom:4px;margin-top:28px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #ccd;padding:6px;text-align:left;vertical-align:top}th{background:#004f8b;color:#fff}.tag{display:inline-block;padding:2px 8px;border-radius:10px;color:#fff;font-size:12px}pre{background:#f4f6fa;border:1px solid #ccd;padding:8px;white-space:pre-wrap;font-size:13px}.box{background:#fff8e1;border:1px solid #f0d58a;padding:10px;margin:10px 0}.sug{font-size:22px;font-weight:bold}@media print{h2{break-after:avoid}}</style></head><body>
+<h1>Relatório de aprendizagem • Escritório Pixel</h1><p><b>Aluno(a):</b> ${escH(S.nome)} &nbsp; <b>Gerado em:</b> ${new Date().toLocaleString('pt-BR')}</p>
+<p><b>Nível no jogo:</b> ${escH(n[1])} • <b>XP:</b> ${S.xp} • <b>Selos:</b> ${S.selos.length?S.selos.map(k=>escH(SELOS[k][0])).join(', '):'nenhum'}</p>
+<p><b>Nota sugerida pelo jogo (0 a 10):</b> ${a.nota.toFixed(1).replace('.',',')} <span style="color:#667">(curso com média mínima 6,0; a nota é do professor, que confirma com as atividades)</span></p>
+<p>${a.fases.map(f=>`<b>${escH(f.nome)} (${escH(f.titulo)}):</b> ${f.feitos} de ${f.total} lugares concluídos`).join(' • ')}</p>
+<h2>Critérios do curso (o PNC não tem indicadores: critérios a partir do conteúdo programático; sugestão do jogo)</h2><div class="box">Sugestão automática a partir de acertos, erros e missões. A menção é do professor, que confirma com a observação em sala e os códigos abaixo.</div>
+<p>Considera só as fases que o aluno já começou: ${a.fases.filter(f=>f.jogou).map(f=>escH(f.nome)).join(' e ')||'nenhuma'}.</p><table><tr><th style="width:45%">Critério</th><th>Sugestão</th><th>Evidências no jogo</th></tr>${IND_K.map(i=>{const L=a.ind[i];const fe=L.filter(x=>x.feito).length,er=L.reduce((t,x)=>t+x.erros,0),dif=L.filter(x=>x.nivel!=='bom').map(x=>escH(x.nome));return `<tr><td>${escH(IND_TXT[i])}</td><td class="sug">${a.sug[i]}</td><td>${L.length?`${fe} de ${L.length} lugares concluídos, ${er} erro(s) no total.${dif.length?'<br><b>Com dificuldade ou pendente:</b> '+dif.join(', '):'<br>Sem dificuldades registradas.'}`:'Ainda não trabalhado no jogo.'}</td></tr>`}).join('')}</table>
+<h2>Conceitos (lugar por lugar)</h2><table><tr><th>Fase / Região</th><th>Lugar</th><th>Conceito</th><th>Concluído</th><th>Erros</th><th>Situação</th></tr>${a.lugares.filter(x=>x.jogou).map(x=>`<tr><td>${escH(x.fase)} • ${escH(x.regiao)}</td><td>${escH(x.nome)}</td><td>${escH(x.conceito)}</td><td>${x.feito?'sim':'não'}</td><td>${x.erros}</td><td><span class="tag" style="background:${cor[x.nivel]}">${rot[x.nivel]}</span></td></tr>`).join('')}</table>
+<h2>Pontos de atenção (recuperação paralela)</h2>${a.atencao.length?'<ul>'+a.atencao.map(x=>`<li><b>${escH(x.conceito)}</b> (${escH(x.nome)}): ${x.feito?x.erros+' erros':'não concluído'}. Retomar o pergaminho e refazer a batalha.</li>`).join('')+'</ul>':'<p>Nenhum conceito com 2 erros ou mais.</p>'}
+<h2>O que o aluno escreveu</h2>${a.textos.map(t=>`<h3 style="font-size:15px;margin-bottom:4px">${escH(t.fase)} • ${escH(t.t)} ${t.ok?'✔ conferido':'(não concluída)'}</h3><pre>${escH(t.txt||'(em branco)')}</pre>`).join('')}
+<p style="color:#667;font-size:12px">Senac PR • Pacote Office Corporativo – Recursos Básicos • Turma 202600144. Relatório gerado pelo próprio jogo, no computador do aluno.</p></body></html>`}

@@ -1,0 +1,29 @@
+<div class="wrap">
+  <header class="hud px" aria-label="Status do aventureiro">
+    <h1>ESCRITÓRIO PIXEL</h1>
+    <span class="dif" id="hDif">—</span>
+    <div class="stat"><b>HERÓI</b><span id="hNome">—</span></div>
+    <div class="stat"><b>VIDA</b><span class="hearts" id="hVida" aria-live="polite"></span></div>
+    <div class="stat"><b>NÍVEL</b><span id="hNivel">—</span></div>
+    <div class="stat"><b>XP</b><div class="xpbar" aria-hidden="true"><i id="hXpBar"></i></div><span class="num" id="hXp">0</span></div>
+    <div class="selos" id="hSelos"></div>
+    <div class="spacer"></div>
+    <button class="sec" id="btnVisao" type="button" aria-pressed="false">Mapa completo</button>
+    <button class="sec" id="btnNiveis" type="button">Níveis</button>
+    <button class="sec" id="btnFicha" type="button">Ficha</button>
+    <button class="sec" id="btnSalvar" type="button">Salvar 💾</button>
+    <button class="sec" id="btnSair" type="button">Sair</button>
+    <button class="sec som" id="btnFx" type="button" aria-pressed="true">Efeitos: sim</button>
+    <button class="sec som" id="btnMus" type="button" aria-pressed="true">Música: sim</button>
+  </header>
+  <div class="main">
+    <div class="mapa px" id="mapa"><canvas id="cv" width="320" height="184" aria-label="Mapa do nível"></canvas></div>
+    <aside class="diario px" aria-label="Diário de viagem">
+      <h2 id="dTit">DIÁRIO DE VIAGEM</h2>
+      <div class="dica">Clique num lugar brilhando no mapa (ou aqui na lista) para viajar.</div>
+      <div id="lista" style="display:flex;flex-direction:column;gap:6px"></div>
+    </aside>
+  </div>
+</div>
+<div class="veu" id="veu" hidden><div class="cena px" id="cena" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
