@@ -3,6 +3,7 @@ Uso: python3 gerar_dados.py   (depois rode ../../build.sh)"""
 import json, os, sys, re
 aqui = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, aqui)
 from cards import CARDS; from qs import Q; from niveis import LEVELS; from miss import MISSOES, CHEFES, NIVEIS_XP, SELOS
+from qs6 import DESAFIO, DESAFIO_COTA, DESAFIO_AREA
 ids=set(); nb=0
 for L in LEVELS:
     assert L['id'] in SELOS, L['id']; assert len(L['fases'])<=4 and len(LEVELS)<=8
@@ -26,8 +27,12 @@ for m in MISSOES.values():
 for C in CHEFES.values():
     for e in C['etapas']:
         if e.get('tipo')=='chips': assert all(c in e['ops'] for c in e['certo'])
+for k,lst in DESAFIO.items():
+    for x in lst: assert len(set(x['o']))==len(x['o']), (k, x['q'])
+# id estável de cada questão do desafio (área + posição) para o relatório
+DSF=[dict(x, id=f"{k}{i+1}", a=k) for k,lst in DESAFIO.items() for i,x in enumerate(lst)]
 J = lambda o: json.dumps(o, ensure_ascii=False)
 js = "// ===================== DADOS: ESCRITÓRIO PIXEL (gerado por conteudo/gerar_dados.py; não edite à mão) =====================\n"
-js += f"const CARDS = {J(CARDS)};\nconst LEVELS = {J(LEVELS)};\nconst Q = {J(Q)};\nconst MISSOES = {J(MISSOES)};\nconst CHEFES = {J(CHEFES)};\nconst NIVEIS_XP = {J(NIVEIS_XP)};\nconst SELOS = {J(SELOS)};\n"
+js += f"const CARDS = {J(CARDS)};\nconst LEVELS = {J(LEVELS)};\nconst Q = {J(Q)};\nconst MISSOES = {J(MISSOES)};\nconst CHEFES = {J(CHEFES)};\nconst NIVEIS_XP = {J(NIVEIS_XP)};\nconst SELOS = {J(SELOS)};\nconst DESAFIO = {J(DSF)};\nconst DESAFIO_COTA = {J(DESAFIO_COTA)};\nconst DESAFIO_AREA = {J(DESAFIO_AREA)};\n"
 open(os.path.join(aqui, '..', 'dados.js'), 'w', encoding='utf-8').write(js)
-print('dados.js gerado:', nb, 'batalhas,', sum(len(v) for v in Q.values()), 'perguntas,', len(CARDS), 'pergaminhos')
+print('dados.js gerado:', nb, 'batalhas,', sum(len(v) for v in Q.values()), 'perguntas,', len(CARDS), 'pergaminhos;', len(DSF), 'questões no banco do desafio')

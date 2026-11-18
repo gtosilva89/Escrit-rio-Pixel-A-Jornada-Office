@@ -108,6 +108,7 @@ select,input{font-family:var(--f-txt);font-size:22px;background:var(--sombra);co
 .mini{font-size:16px;padding:2px 8px;box-shadow:0 2px 0 #b8860b,0 0 0 2px var(--sombra)}
 .arte{width:100%;max-width:480px;aspect-ratio:96/54;image-rendering:pixelated;align-self:center;border:3px solid var(--borda)}
 .tbw{overflow-x:auto;max-width:100%}
+.cena>*{flex-shrink:0}
 .tb{border-collapse:collapse;font-size:20px;min-width:100%}
 .tb th,.tb td{border:2px solid #3b3366;padding:3px 8px;text-align:left;white-space:nowrap}
 .tb th{background:#004f8b;color:#fff;font-weight:400}
@@ -117,6 +118,8 @@ select,input{font-family:var(--f-txt);font-size:22px;background:var(--sombra);co
 .nv{border:3px solid var(--borda);padding:10px 12px;display:flex;flex-direction:column;gap:6px;background:#1a1533;min-width:0}
 .nv.facil{border-color:var(--ok)} .nv.medio{border-color:var(--ouro)} .nv.dificil{border-color:var(--mana)} .nv.expert{border-color:#c77dff}
 .nv.mestre{border-color:#ff77a8;grid-column:1/-1}
+.nv.desafio{border-color:#f4d35e;grid-column:1/-1;background:linear-gradient(135deg,#2a2150,#3b2a14)}
+.medalha{border:6px double;padding:12px;text-align:center;font-family:'Pixelify Sans',monospace;font-size:20px;background:#1a1533}.medalha b{display:block;font-size:44px;letter-spacing:4px}
 .nv.trava{opacity:.8;border-style:dashed}
 .nvtop{display:flex;justify-content:space-between;gap:8px}
 .nvn{font-family:var(--f-tit);font-size:17px;color:var(--ouro)}

@@ -24,6 +24,10 @@ function baixarArq(nome,conteudo,tipo){const b=new Blob([conteudo],{type:tipo});
 function csvProf(AL){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const cab=['Aluno','Salvo em','Codigo','XP','Nivel','Nota sugerida',...LEVELS.map(l=>l.nome),...IND_K.map(k=>'C'+k),'Atencao',...BAT.map(b=>'Erros '+b.nome)];
  const rows=AL.map(S=>{const a=analisar(S);return[S.nome,S._data||'',S._cod||'',S.xp,nivel(S.xp)[1],a.nota.toFixed(1).replace('.',','),...a.fases.map(f=>f.jogou?f.feitos+'/'+f.total:''),...IND_K.map(k=>a.sug[k]),a.atencao.map(x=>x.conceito).join('; '),...BAT.map(b=>{const p=(S.P||{})[b.lv];if(!p)return'';return p.feito[b.id]?((p.erros||{})[b.id]||0):'não fez'})]});
  baixarArq('escritorio-pixel_turma.csv','﻿'+[cab,...rows].map(r=>r.map(q).join(';')).join('\r\n'),'text/csv')}
+function csvDesafio(AL){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const RK=AL.filter(S=>S.dsf&&S.dsf.st==='fim').sort((a,b)=>b.dsf.pts-a.dsf.pts||a.dsf.seg-b.dsf.seg);
+ const rows=[['Posicao','Aluno','Acertos (de 30)','Pontos','Tempo (s)','Medalha','Concluido em',...Object.values(DESAFIO_AREA)],...RK.map((S,i)=>{const d=S.dsf;const pa={};for(const[id,ok]of d.r||[]){const a=(DSF_ID[id]||{}).a;pa[a]=pa[a]||[0,0];pa[a][1]++;if(ok)pa[a][0]++}
+  return[i+1,S.nome,d.ac,d.pts,Math.round(d.seg),dsfMedalha(d.ac)[0],d.fim||'',...Object.keys(DESAFIO_AREA).map(a=>pa[a]?pa[a][0]+'/'+pa[a][1]:'')]})];
+ baixarArq('escritorio-pixel_ranking-desafio.csv','\ufeff'+rows.map(r=>r.map(q).join(';')).join('\r\n'),'text/csv')}
 function relTurmaProf(AL){const partes=AL.map(S=>relatorioHTML(S).replace(/^[\s\S]*<body>/,'').replace(/<\/body>[\s\S]*$/,'')).join('<div style="page-break-after:always"></div>');
  const h=relatorioHTML(AL[0]);const head=h.slice(0,h.indexOf('<body>'));baixarArq('escritorio-pixel_relatorios_turma.html',head.replace(/<title>.*<\/title>/,'<title>Relatórios da turma</title>')+'<body>'+partes+'</body></html>','text/html')}
 function abrirRelProf(S){const w=window.open('','_blank');if(!w){baixarArq('relatorio_'+S.nome.replace(/\s+/g,'-')+'.html',relatorioHTML(S),'text/html');toast('Pop-up bloqueado: o relatório foi baixado.');return}w.document.write(relatorioHTML(S));w.document.close()}
@@ -37,6 +41,7 @@ function painelProf(){const AL=alunosProf();const saida=el('div',{});
  const barra=el('div',{class:'acoes',style:'justify-content:flex-start;flex-wrap:wrap'},
   NUVEM_URL?el('button',{type:'button',on:{click:atualizar}},'Atualizar da planilha ⟳'):null,
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>csvProf(AL)}},'Baixar planilha (CSV)'),
+  el('button',{class:'sec',type:'button',disabled:AL.some(S=>S.dsf)?null:'',on:{click:()=>csvDesafio(AL)}},'Ranking do desafio (CSV)'),
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>relTurmaProf(AL)}},'Relatório da turma'),
   el('button',{class:'sec',type:'button',disabled:AL.length?null:'',on:{click:()=>baixarArq('escritorio-pixel_registro.json',JSON.stringify(regLer()),'application/json')}},'Exportar registro'),
   el('button',{class:'sec',type:'button',on:{click:imp}},'Juntar registro de outro PC'));
@@ -47,7 +52,12 @@ function painelProf(){const AL=alunosProf();const saida=el('div',{});
   const calor=AL.map(S=>`<tr><td>${escH(S.nome)}</td>${BAT.map(b=>{const p=(S.P||{})[b.lv];if(!p)return cel('','#1a1533');const e=(p.erros||{})[b.id]||0,f=p.feito&&p.feito[b.id];return cel(f?(e>=4?'4+':e):'·',!f?'#3d3550':e===0?'#2d6a4f':e<=1?'#55a630':e<=3?'#e09f3e':'#9e2a2b')}).join('')}</tr>`).join('');
   const soma=BAT.map(b=>AL.reduce((t,S)=>t+((((S.P||{})[b.lv]||{}).erros||{})[b.id]||0),0));
   const top=BAT.map((b,i)=>[b,soma[i]]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).slice(0,6);
-  saida.innerHTML=`<h3 class="ph">TURMA (${AL.length} alunos)</h3><div class="tbw"><table class="tb"><tr><th>Aluno</th><th>Salvo em</th><th>Último código</th><th>XP</th><th>Nota</th>${LEVELS.map(l=>`<th>${l.nome}</th>`).join('')}${IND_K.map(k=>`<th>C${k}</th>`).join('')}<th>Atenção</th><th></th></tr>${linhas}</table></div>
+  const RK=AL.filter(S=>S.dsf).sort((a,b)=>(b.dsf.st==='fim')-(a.dsf.st==='fim')||b.dsf.pts-a.dsf.pts||a.dsf.seg-b.dsf.seg);
+  const rk=RK.map((S,i)=>{const d=S.dsf,f=d.st==='fim';return `<tr><td class="num">${f?i+1+'º':'—'}</td><td>${escH(S.nome)}</td><td class="num">${f?d.ac+'/30':'jogando ('+d.i+'/30)'}</td><td class="num">${d.pts}</td><td>${dsfTempo(d.seg)}</td><td>${f?dsfMedalha(d.ac)[0]:'—'}</td><td>${escH(d.fim||'')}</td></tr>`}).join('');
+  const errQ={};for(const S of RK)for(const[id,ok]of S.dsf.r||[]){errQ[id]=errQ[id]||[0,0];errQ[id][1]++;if(!ok)errQ[id][0]++}
+  const topQ=Object.entries(errQ).filter(x=>x[1][0]>0).sort((x,y)=>y[1][0]-x[1][0]).slice(0,6);
+  const blocoDsf=`<h3 class="ph">🏆 RANKING DO GRANDE DESAFIO (${RK.filter(S=>S.dsf.st==='fim').length} concluíram)</h3>`+(RK.length?`<div class="dica">Ordem: mais pontos; empate vai para o menor tempo de resposta. Pontos = 100 por acerto + bônus de rapidez (até 50 por questão).</div><div class="tbw"><table class="tb"><tr><th>#</th><th>Aluno</th><th>Acertos</th><th>Pontos</th><th>Tempo</th><th>Medalha</th><th>Concluído em</th></tr>${rk}</table></div>`+(topQ.length?'<div class="dica">Questões do desafio que a turma mais errou:</div><ol>'+topQ.map(([id,[e,t]])=>`<li>${escH((DSF_ID[id]||{}).q||id)} <span class="dica">(${e} de ${t} erraram)</span></li>`).join('')+'</ol>':''):'<p class="dica">Ninguém fez o desafio ainda.</p>');
+  saida.innerHTML=blocoDsf+`<h3 class="ph">TURMA (${AL.length} alunos)</h3><div class="tbw"><table class="tb"><tr><th>Aluno</th><th>Salvo em</th><th>Último código</th><th>XP</th><th>Nota</th>${LEVELS.map(l=>`<th>${l.nome}</th>`).join('')}${IND_K.map(k=>`<th>C${k}</th>`).join('')}<th>Atenção</th><th></th></tr>${linhas}</table></div>
   <h3 class="ph">BATALHAS QUE MAIS DERRUBARAM A TURMA</h3>${top.length?'<ol>'+top.map(([b,n])=>`<li>${escH(b.nome)} (${escH(b.conceito)}): ${n} erro(s) somados</li>`).join('')+'</ol>':'<p class="dica">Nenhum erro registrado.</p>'}
   <h3 class="ph">MAPA DE CALOR (erros por batalha)</h3><div class="dica">Verde = 0 ou 1 erro; laranja = 2 ou 3; vermelho = 4 ou mais; · = não concluída; escuro = fase não começada. Quem voltou por código aparece com 0, 2 ou 4+ (o código guarda a faixa).</div>
   <div class="tbw"><table class="tb calor"><tr><th>Aluno</th>${BAT.map(b=>`<th title="${escH(b.conceito)}">${escH(b.nome)}</th>`).join('')}</tr>${calor}</table></div>

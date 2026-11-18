@@ -8,6 +8,8 @@ RPG em pixel art para revisar o Pacote Office, criado para a turma 202600144 do 
 O vírus **Barão Bagunça** desformatou a Horizonte Distribuidora (empresa fictícia) às vésperas da entrega do Edital Simulado 001/2026. O aluno é a pessoa nova da equipe e precisa salvar documentos, planilhas, e-mails e slides.
 
 ## Fases
+Antes das fases há a **Fase 0 • Grande Desafio Office** (com premiação): 30 questões mais difíceis sorteadas sem repetir de um banco de 54, uma chance por questão, explicação depois de cada resposta, pontos com bônus de rapidez e ranking na Área do Professor.
+
 | Fase | Tema | Regiões |
 |---|---|---|
 | 1 • O Vale dos Documentos | Word + hard/soft skills + fontes confiáveis | Vila da Página, Torre dos Estilos, Praça das Competências |
@@ -25,7 +27,7 @@ O vírus **Barão Bagunça** desformatou a Horizonte Distribuidora (empresa fict
 Cada vez que o aluno clica em **Salvar**, o jogo mostra um código para anotar e envia o progresso para a planilha Google do professor (`planilha/Codigo.gs`, Apps Script). A **Área do Professor** (tela inicial) baixa a planilha e mostra a turma, a nota sugerida, os critérios, o mapa de calor de erros, o CSV e os relatórios.
 
 ## Para editar
-O conteúdo fica em `fonte/conteudo/` (perguntas em `qs1.py` a `qs5.py`; pergaminhos em `cards.py`; fases em `niveis.py`; missões e chefões em `miss.py`).
+O conteúdo fica em `fonte/conteudo/` (perguntas em `qs1.py` a `qs5.py`; banco do desafio em `qs6.py`; pergaminhos em `cards.py`; fases em `niveis.py`; missões e chefões em `miss.py`).
 
 ```
 python3 fonte/conteudo/gerar_dados.py

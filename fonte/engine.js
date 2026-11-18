@@ -323,12 +323,12 @@ function telaNiveis(){const cards=LEVELS.map((lv,i)=>{const lib=S.lib[lv.id];con
   return el('div',{class:'nv '+lv.id+(lib?'':' trava')},el('div',{class:'nvtop'},el('span',{class:'nvn'},`${i+1}. ${lv.nome.toUpperCase()}`),el('span',{class:'dica num'},`${fe}/${tot}`)),el('div',{class:'nvt'},lv.titulo),el('div',{class:'dica'},lv.aula),el('div',{class:'dica'},lv.ind),
    lib?el('div',{class:'acoes',style:'justify-content:flex-start'},el('button',{type:'button',on:{click:()=>entrarNivel(lv)}},nivelCompleto(lv)?'Rever ▶':fe?'Continuar ▶':'Jogar ▶'))
       :el('div',{class:'acoes',style:'justify-content:flex-start;align-items:center'},inp,el('button',{class:'sec',type:'button',on:{click:lib2}},'Liberar'),fb))});
- cena(el('h2',{},'Escolha o nível'),el('div',{class:'dica'},'Cada fase é uma etapa do curso (uma Situação de Aprendizagem) e tem de 2 a 4 regiões que se encaixam num mapa só. Termine uma fase para liberar a próxima, ou peça o código ao Mestre quando a turma chegar lá.'),el('div',{class:'nvs'},...cards),
+ cena(el('h2',{},'Escolha o nível'),el('div',{class:'dica'},'Cada fase é uma etapa do curso (uma Situação de Aprendizagem) e tem de 2 a 4 regiões que se encaixam num mapa só. Termine uma fase para liberar a próxima, ou peça o código ao Mestre quando a turma chegar lá. O Desafio (fase 0) abre com o código que o Mestre der na hora.'),el('div',{class:'nvs'},cardDesafio(),...cards),
   LV?el('div',{class:'acoes'},el('button',{class:'sec',type:'button',on:{click:fechar}},'Voltar ao mapa')):null)}
 function inicio(){let av=0;sujo=false;ultimoCod='';
  const avs=el('div',{class:'avs',role:'group','aria-label':'Escolha o herói'},...AVS.map((p,i)=>{const c=el('canvas',{width:8,height:11});spr(c.getContext('2d'),HERO,p,0,0);return el('button',{type:'button','aria-pressed':i===0?'true':'false','aria-label':'Herói '+(i+1),on:{click:()=>{av=i;avs.querySelectorAll('button').forEach((x,j)=>x.setAttribute('aria-pressed',j===i))}}},c)}));
  const nome=el('input',{id:'nomeHeroi',maxlength:'24',placeholder:'Seu nome (ex.: Ana Souza)','aria-label':'Seu nome',autocomplete:'off'});
- const cod=el('input',{id:'codHeroi',maxlength:'40',placeholder:'Código de salvamento (se já jogou)','aria-label':'Código de salvamento',autocomplete:'off',style:'text-transform:uppercase;letter-spacing:2px'});
+ const cod=el('input',{id:'codHeroi',maxlength:'60',placeholder:'Código de salvamento (se já jogou)','aria-label':'Código de salvamento',autocomplete:'off',style:'text-transform:uppercase;letter-spacing:2px'});
  const fb=el('div',{class:'fb no',hidden:''});
  const tremer=q=>{q.focus();q.classList.add('tremer');setTimeout(()=>q.classList.remove('tremer'),400)};
  const comecar=()=>{const v=nome.value.trim();if(!v)return tremer(nome);if(cod.value.trim())return continuar();S={nome:v,av,xp:0,vida:5,selos:[],lv:LEVELS[0].id,lib:{[LEVELS[0].id]:true},P:{}};sujo=true;telaNiveis()};
