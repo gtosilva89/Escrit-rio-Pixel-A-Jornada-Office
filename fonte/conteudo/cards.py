@@ -165,6 +165,57 @@ c("edital","A proposta do Edital",[
  "Versões: a alteração surpresa gera o v2 de todos os arquivos que mudam.",
  "Protocolo por e-mail: assunto \"Proposta Comercial - Edital Simulado 001/2026 - Nome da Empresa\", breve apresentação e os três anexos (PDF, .xlsx, .pptx)."],
  "a Horizonte entregou a proposta v2 com o mesmo total nos três arquivos."),
+# ---------------- NOVOS: Excel (revisão maior e recursos), apresentação oral e Mestre Final ----------------
+c("basico","Revisão: a planilha por dentro",[
+ "CÉLULA é o encontro de coluna e linha (B4). INTERVALO é um bloco de células (B2:B10). GUIA é cada planilha; o arquivo .xlsx inteiro é a PASTA DE TRABALHO.",
+ "Formatos de número (Moeda, Contábil, Porcentagem, Data) mudam só a aparência: o valor continua número e entra nas contas.",
+ "Mesclar e Centralizar une células para títulos. Clique no + ao lado das guias para criar uma nova e dê duplo clique no nome para renomear."],
+ "a pasta Proposta_Comercial_Horizonte.xlsx tem as guias 01_PESQUISA a 05_RESUMO e todos os valores em Moeda."),
+c("recursos","Recursos que fazem a diferença",[
+ "FORMATAR COMO TABELA: filtro nos títulos, linhas alternadas e a tabela cresce sozinha.",
+ "VALIDAÇÃO DE DADOS (guia Dados) cria listas suspensas e impede digitação errada. TABELA DINÂMICA (Inserir) resume centenas de linhas arrastando campos.",
+ "PROTEGER PLANILHA (Revisão) guarda as fórmulas; antes, desbloqueie as células que podem ser preenchidas. QUEBRAR TEXTO mostra textos longos dentro da célula."],
+ "a coluna Status tem lista suspensa e a guia 05_RESUMO está protegida."),
+c("impressao","Imprimir e entregar a planilha",[
+ "Arquivo > Imprimir mostra a visualização antes de gastar papel.",
+ "Layout da Página: Orientação (Paisagem para planilhas largas), Área de Impressão, Imprimir Títulos (repetir o cabeçalho) e Ajustar para 1 página de largura.",
+ "Congelar Painéis vale só na tela; para o papel use Imprimir Títulos."],
+ "cada guia da proposta cabe em 1 página de largura, com o cabeçalho repetido."),
+c("oratoria","Apresentar com segurança",[
+ "Ensaie em voz alta, com cronômetro, e divida as falas da equipe.",
+ "Olhe para o público; o slide é apoio, não roteiro para ler. Comece pelo problema e termine com a chamada para ação.",
+ "Não sabe responder? Seja honesto e combine o retorno por e-mail. Informação inventada derruba a credibilidade."],
+ "a defesa da Horizonte foi ensaiada 2 vezes e coube em 7 minutos e meio."),
+c("rev_word","Mestre Final • Word",[
+ "Página: Layout (margens, orientação, quebras de página e de seção). Texto: Fonte e Parágrafo, Pincel de Formatação.",
+ "Revisão: F7, sublinhado vermelho (ortografia) e azul (gramática), idioma de revisão. Estrutura: cabeçalho, rodapé, número de página, tabela, nota de rodapé, capa.",
+ "Estilos (Título 1, Título 2) → Painel de Navegação e Sumário (atualizar no fim). Entrega: Salvar como PDF, guardando o .docx."],
+ "a proposta técnica passou por estilos, sumário, revisão e PDF."),
+c("rev_skills","Mestre Final • Competências",[
+ "Hard skill = técnica comprovável. Soft skill = comportamento. Mostre as duas com exemplos reais.",
+ "Fonte confiável: quem publicou, data, link completo. Escreva com suas palavras e cite.",
+ "IA: bom prompt, revisão crítica, nada de dados sigilosos, nenhum número sem fonte."],
+ "o grupo citou as fontes da pesquisa e registrou os prompts usados."),
+c("rev_excel1","Mestre Final • Excel: contas e decisões",[
+ "Fórmula começa com = ; em português, ; separa argumentos e : indica intervalo.",
+ "Porcentagem: aumento *(1+x%), desconto *(1-x%). Referência absoluta com $ (F4).",
+ "SE, E, OU, SE aninhado, CONT.SE e SOMASE (um critério), CONT.SES (vários critérios)."],
+ "o total de cada item da proposta usa quantidade, preço e desconto travado com $."),
+c("rev_excel2","Mestre Final • Excel: busca, gráficos e entrega",[
+ "PROCV exato (FALSO) e por faixas (VERDADEIRO, primeira coluna crescente). #N/D = não encontrou; confira espaços sobrando (ARRUMAR).",
+ "Gráfico ligado às células se atualiza sozinho: linha para tempo, colunas para comparar, pizza para composição.",
+ "Validação e proteção evitam erros; área de impressão e ajuste de página deixam a entrega pronta."],
+ "a guia 05_RESUMO tem o gráfico de evolução e está pronta para imprimir."),
+c("rev_outlook","Mestre Final • Outlook",[
+ "Para (age), Cc (acompanha), Cco (oculto). Responder não leva anexos; Encaminhar leva.",
+ "Arquivo grande: link do OneDrive. Senha só sua, MFA ligado, desconfie de urgência + link + pedido de dados.",
+ "Pastas + regras + bandeiras organizam. Reunião com recursos e recorrência; compartilhe o calendário com a permissão certa."],
+ "a equipe marcou a defesa com a Sala 2 e o projetor e protocolou a proposta no prazo."),
+c("rev_ppt","Mestre Final • PowerPoint",[
+ "Slide Mestre padroniza; Layout organiza; Classificação de Slides reordena; Anotações guardam a sua fala.",
+ "Pouco texto, gráficos coerentes com o Excel, SmartArt para processos, imagens com direito de uso.",
+ "Transição entre slides, animação nos objetos. F5 do início, Shift+F5 do slide atual. Folhetos de 3 por página para a comissão anotar."],
+ "os 6 slides da defesa seguem o mestre da Horizonte e o total é o mesmo da planilha."),
 ]
 CARD_IX={k:i for i,(k,_) in enumerate(LISTA)}
 CARDS=[d for _,d in LISTA]

@@ -5,7 +5,7 @@ aqui = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, aqui)
 from cards import CARDS; from qs import Q; from niveis import LEVELS; from miss import MISSOES, CHEFES, NIVEIS_XP, SELOS
 ids=set(); nb=0
 for L in LEVELS:
-    assert L['id'] in SELOS, L['id']; assert len(L['fases'])<=4
+    assert L['id'] in SELOS, L['id']; assert len(L['fases'])<=4 and len(LEVELS)<=8
     for f in L['fases']:
         for k, v in f['lugares'].items():
             assert k not in ids, ('id repetido', k); ids.add(k)

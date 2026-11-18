@@ -14,7 +14,7 @@ def B(id,nome,ic,card,npc,cor,fala,inim,ind,selo=None):
 def MI(id,nome,ic,miss,npc,cor,fala,ind): return (id,{"nome":nome,"ic":ic,"tipo":"missoes","miss":miss,"npc":npc,"npcCor":cor,"fala":fala,"ind":ind})
 def PO(id,codigo,fala): return (id,{"nome":"Portão do Mestre","ic":"portao","tipo":"portao","codigo":codigo,"npc":"Segurança da Portaria","npcCor":"#adb5bd","fala":fala})
 def CH(id,nome,chefe,codigo,fala,ind): return (id,{"nome":nome,"ic":"castelo","tipo":"chefao","chefe":chefe,"codigo":codigo,"npc":"Recepcionista da Diretoria","npcCor":"#6a040f","fala":fala,"ind":ind})
-POS={3:[(60,60),(170,120),(265,55)],4:[(50,50),(170,35),(255,110),(110,145)],5:[(45,45),(150,35),(255,60),(230,140),(95,145)],6:[(40,40),(135,30),(240,45),(270,125),(165,145),(55,140)]}
+POS={2:[(80,70),(240,120)],3:[(60,60),(170,120),(265,55)],4:[(50,50),(170,35),(255,110),(110,145)],5:[(45,45),(150,35),(255,60),(230,140),(95,145)],6:[(40,40),(135,30),(240,45),(270,125),(165,145),(55,140)]}
 def regiao(nome,hist,lista):
     lug={};ids=[]
     for (x,y),(id,d) in zip(POS[len(lista)],lista):
@@ -23,7 +23,7 @@ def regiao(nome,hist,lista):
             "edges":[[ids[i],ids[i+1]] for i in range(len(ids)-1)],"saida":ids[-1]}
 WD,XL,OU,PP,CP=[1],[2],[3],[4],[5]
 # =============================== FASE 1 ===============================
-L1={"id":"facil","nome":"Fase 1","titulo":"O Vale dos Documentos","aula":"Encontro 1 de 3 • Word e competências profissionais","bioma":"campo","codigo":None,
+L1={"id":"facil","nome":"Fase 1","titulo":"O Vale dos Documentos","aula":"Encontro 1 • Word e competências profissionais","bioma":"campo","codigo":None,
  "ind":"Word (layout, formatação, revisão, estrutura, estilos, PDF) • Hard e soft skills • Fontes confiáveis",
  "fases":[
  regiao("Vila da Página",[
@@ -55,15 +55,16 @@ L1={"id":"facil","nome":"Fase 1","titulo":"O Vale dos Documentos","aula":"Encont
    CH("castelo1",'Castelo do Barão Bagunça','word','NEGRITO','O Barão Bagunça trancou o último documento no castelo. Chefão se enfrenta em EQUIPE, no quadro. Peça o código ao Mestre.',[1,5])]),
  ]}
 # =============================== FASE 2 ===============================
-L2={"id":"medio","nome":"Fase 2","titulo":"A Torre das Planilhas","aula":"Encontro 2 de 3 • Excel (listas de exercícios e proposta comercial)","bioma":"savana","codigo":'PLANILHA',
- "ind":"Fórmulas, funções, porcentagem, referência absoluta, SE, CONT.SE, SOMASE, PROCV, erros e gráficos",
+L2={"id":"medio","nome":"Fase 2","titulo":"A Torre das Planilhas","aula":"Encontro 2 • Excel: revisão maior + recursos novos","bioma":"savana","codigo":'PLANILHA',
+ "ind":"Revisão da planilha, fórmulas, funções, %, $, SE, CONT.SE, SOMASE, PROCV, erros, gráficos, tabela, validação, tabela dinâmica, proteção e impressão",
  "fases":[
  regiao("Mercado das Contas",[
   h(G,GC,'planilha','Os documentos voltaram! Mas o Barão fugiu para a planilha da proposta comercial: totais zerados, fórmulas apagadas, gráficos sumidos.'),
-  h(M,MC,'planilha','Eu sou a Mestra Fórmula. Toda fórmula começa com = e o Excel em português separa argumentos com ; (ponto e vírgula). Vamos do básico ao PROCV, como nas listas de exercícios.'),
+  h(M,MC,'planilha','Eu sou a Mestra Fórmula. Antes dos recursos novos, vamos fazer uma REVISÃO MAIOR: célula, guia, formatos, operações, funções e porcentagem, como nas suas listas de exercícios.'),
   h(R,RC,'robo','Eu calculo tudo na hora... desde que a fórmula esteja certa. Se escrever errado, eu calculo errado mais rápido ainda!')],
-  [B("mercado2",'Feira das Operações','mercado','operacoes',M,MC,'O Duende do Sinal trocou os + pelos x. Ponha ordem nas contas do pedido da papelaria.',['Duende do Sinal','#ffd166','#14112a'],XL),
-   B("planilha2",'Banca das Funções','planilha','funcoes',M,MC,'A Lesma Somadora soma célula por célula. Mostre o poder de SOMA, MÉDIA, MÍNIMO e MÁXIMO.',['Lesma Somadora','#90be6d','#e63946'],XL),
+  [B("planilha2",'Escola da Planilha','planilha','basico',M,MC,'A Coruja das Células esqueceu o nome de tudo: célula, guia, pasta de trabalho. Relembre o básico.',['Coruja das Células','#9c6644','#4cc9f0'],XL),
+   B("mercado2",'Feira das Operações','mercado','operacoes',M,MC,'O Duende do Sinal trocou os + pelos x. Ponha ordem nas contas do pedido da papelaria.',['Duende do Sinal','#ffd166','#14112a'],XL),
+   B("biblioteca2a",'Banca das Funções','biblioteca','funcoes',M,MC,'A Lesma Somadora soma célula por célula. Mostre o poder de SOMA, MÉDIA, MÍNIMO e MÁXIMO.',['Lesma Somadora','#90be6d','#e63946'],XL),
    B("moinho2",'Moinho do Percentual','moinho','porcento',G,GC,'O Gnomo do Desconto dá aumentos no lugar de descontos. Acerte os percentuais.',['Gnomo do Desconto','#e76f51','#ffd166'],XL),
    MI("cartorio2",'Caixa da Papelaria','cartorio','caixa',M,MC,'Agora é com você: escreva as fórmulas da papelaria e confira no Excel.',XL)]),
  regiao("Cofre do Cifrão",[
@@ -80,17 +81,20 @@ L2={"id":"medio","nome":"Fase 2","titulo":"A Torre das Planilhas","aula":"Encont
    B("ponte2",'Ponte do E e do OU','ponte','eou',M,MC,'O Troll das Condições só deixa passar quem sabe a diferença entre E e OU.',['Troll das Condições','#6b705c','#e63946'],XL,'logica'),
    B("biblioteca2",'Arquivo do CONT.SE','biblioteca','contse',M,MC,'O Contador Cego conta tudo de uma vez. Mostre como contar e somar só o que interessa.',['Contador Cego','#457b9d','#ffd166'],XL),
    MI("lab2",'Laboratório das Decisões','lab','decisao',M,MC,'Escreva as fórmulas de decisão do boletim e das despesas.',XL)]),
- regiao("Observatório dos Gráficos",[
-  h(G,GC,'grafico','Última parte da planilha: buscar os preços com PROCV e montar os gráficos da evolução dos investimentos, de 2022 a 2026.'),
-  h(V,VC,'vilao','Vocês podem até calcular... mas sem gráfico a comissão não vai entender NADA. HA HA HA!')],
+ regiao("Observatório dos Recursos",[
+  h(G,GC,'grafico','Última parte da planilha: buscar os preços com PROCV, montar os gráficos e deixar tudo à prova de erro e pronto para imprimir.'),
+  h(M,MC,'tabela','Agora vêm os RECURSOS NOVOS: Formatar como Tabela, Validação de Dados, Tabela Dinâmica, Proteger Planilha e a impressão bem configurada.'),
+  h(V,VC,'vilao','Vocês podem até calcular... mas sem gráfico e com a planilha saindo em 5 folhas, a comissão não vai entender NADA. HA HA HA!')],
   [B("torre2",'Telescópio do PROCV','torre','procv',M,MC,'O Buscador Perdido nunca encontra o produto na tabela. Mostre como o PROCV procura.',['Buscador Perdido','#4361ee','#ffd166'],XL,'procv'),
    B("montanha2",'Mirante dos Gráficos','montanha','graficos',G,GC,'A Névoa dos Números esconde a evolução. Escolha o gráfico certo para cada pergunta.',['Névoa dos Números','#adb5bd','#3a0ca3'],XL),
    B("farol2",'Farol da Organização','farol','organizar',G,GC,'O Tornado da Bagunça embaralhou as linhas. Classifique, filtre e destaque.',['Tornado da Bagunça','#8ecae6','#e63946'],XL),
+   B("lab2b",'Oficina dos Recursos','lab','recursos',M,MC,'A Mão Desastrada apaga fórmulas e digita status errado. Use tabela, validação, tabela dinâmica e proteção.',['Mão Desastrada','#f28482','#14112a'],XL,'recursos'),
+   B("cartorio2b",'Gráfica da Impressão','cartorio','impressao',G,GC,'A Impressora Faminta come papel com colunas soltas. Configure a impressão.',['Impressora Faminta','#495057','#80ed99'],XL),
    CH("castelo2",'Fortaleza da Planilha Quebrada','planilha','PROCV','O Barão Bagunça se escondeu na guia 05_RESUMO. Chefão em EQUIPE, no quadro. Peça o código ao Mestre.',[2])]),
  ]}
 # =============================== FASE 3 ===============================
-L3={"id":"dificil","nome":"Fase 3","titulo":"O Porto das Comunicações","aula":"Encontro 3 de 3 • Outlook, PowerPoint, IA e a entrega do Edital","bioma":"cristal","codigo":'OUTLOOK',
- "ind":"Outlook (e-mail, segurança, pastas, contatos, agenda) • PowerPoint (modos, objetos, transições, apresentação) • IA • Edital",
+L3={"id":"dificil","nome":"Fase 3","titulo":"O Porto do Correio","aula":"Encontro 3 (1ª parte) • Outlook","bioma":"neve","codigo":'OUTLOOK',
+ "ind":"Outlook: conceitos, área de trabalho, envio, cópias e anexos, senhas, pastas, filtros, contatos, agenda, recursos e compartilhamento",
  "fases":[
  regiao("Correio Central",[
   h(G,GC,'email','A planilha está salva! Agora o Barão atacou o Outlook: e-mails para as pessoas erradas, anexos perdidos e um golpe de phishing rondando a caixa de entrada.'),
@@ -102,25 +106,56 @@ L3={"id":"dificil","nome":"Fase 3","titulo":"O Porto das Comunicações","aula":
    MI("cartorio3",'Escrivaninha do E-mail','cartorio','email',G,GC,'Escreva o e-mail de pedido de esclarecimento para a comissão.',OU)]),
  regiao("Arquivo e Agenda",[
   h(G,GC,'agenda','A caixa de entrada virou um caos e a defesa da proposta ainda não está marcada. Precisamos da sala, do projetor e da equipe inteira.'),
-  h(M,MC,'agenda','Pastas e regras organizam. Contatos e grupos agilizam. A agenda, com recursos e compartilhamento, marca a reunião certa no horário certo.')],
+  h(M,MC,'agenda','Pastas e regras organizam. Contatos e grupos agilizam. A agenda, com recursos e compartilhamento, marca a reunião certa no horário certo.'),
+  h(V,VC,'vilao','Escondi o convite da reunião no meio de 300 e-mails. Boa sorte!')],
   [B("biblioteca3",'Arquivo das Pastas','biblioteca','organiza',G,GC,'A Traça das Mensagens rói tudo o que não está organizado. Use pastas, regras e filtros.',['Traça das Mensagens','#9c6644','#e63946'],OU),
    B("mercado3",'Praça dos Contatos','mercado','contatos',G,GC,'O Esquecido nunca lembra o e-mail de ninguém. Mostre o catálogo de endereços.',['Esquecido','#b8b0d6','#14112a'],OU),
    B("moinho3",'Relógio da Agenda','moinho','agenda',G,GC,'O Atrasildo marca reunião sem sala e sem convidados. Domine o calendário.',['Atrasildo','#ffb703','#3a0ca3'],OU,'agenda'),
-   PO("portao3",'AGENDA','Alto lá! O código deste portão só o Mestre sabe. Ele libera quando a reunião da defesa estiver marcada.')]),
- regiao("Palco dos Slides",[
+   PO("portao3",'AGENDA','Alto lá! O código deste portão só o Mestre sabe. Ele libera quando a reunião da defesa estiver marcada.'),
+   CH("castelo3",'Central dos Correios do Barão','correio','ANEXO','O Barão Bagunça tomou a central de e-mails. Chefão em EQUIPE, no quadro. Peça o código ao Mestre.',[3])]),
+ ]}
+# =============================== FASE 4 ===============================
+L4={"id":"expert","nome":"Fase 4","titulo":"O Palco dos Slides","aula":"Encontro 3 (2ª parte) • PowerPoint, IA e apresentação","bioma":"cristal","codigo":'SLIDES',
+ "ind":"PowerPoint: modos, layouts e Slide Mestre, figuras e objetos, transições, impressão e apresentação • IA • oratória",
+ "fases":[
+ regiao("Palco dos Modos",[
   h(G,GC,'slides','A defesa tem 7 a 8 minutos e no máximo 6 slides. O Barão apagou o Slide Mestre e colocou 300 palavras por slide.'),
   h(M,MC,'slides','Lembre do pitch do Novo Produto com IA: pouco texto, imagens, paleta de cores, transições e a sua fala no comando.')],
-  [B("estadio3",'Palco dos Modos','estadio','ppt',G,GC,'O Diretor Confuso não acha o modo certo de exibir. Mostre cada modo e o Slide Mestre.',['Diretor Confuso','#e63946','#ffd166'],PP),
-   B("atelie3",'Ateliê dos Objetos','atelie','pptobj',G,GC,'O Pintor Exagerado enche os slides de texto e cores. Mostre as boas práticas.',['Pintor Exagerado','#ff7b00','#14112a'],PP),
-   B("torre3",'Torre da Apresentação','torre','transicao',G,GC,'O Mágico das Transições confunde transição com animação. Ensaie a apresentação.',['Mágico das Transições','#7209b7','#4cc9f0'],PP,'palco'),
-   MI("campo3",'Camarim do Pitch','campo','pitch',G,GC,'Monte a sequência dos slides da defesa e escolha os recursos certos.',PP)]),
- regiao("Sala da Comissão",[
-  h(G,GC,'ia','Chegou o dia! A comissão do Edital está reunida. Cada empresa vai protocolar a proposta e defender as suas escolhas.'),
-  h(M,MC,'ia','A IA ajudou a criar ideias, mas quem responde à comissão é você. Coerência entre Excel, Word, PowerPoint e e-mail vale ponto.'),
-  h(V,VC,'vilao','Última chance! Se UM valor estiver diferente entre os arquivos, a proposta inteira cai. HA HA HA!')],
-  [B("lab3",'Laboratório da IA','lab','ia',M,MC,'O Robô Alucinado inventa números sem fonte. Use a IA com senso crítico.',['Robô Alucinado','#4cc9f0','#ff006e'],CP),
-   B("cofre3",'Mesa da Comissão','cofre','edital',G,GC,'O Fiscal Implacável confere cada regra do edital. Mostre que a proposta está coerente.',['Fiscal Implacável','#14112a','#ffd166'],CP),
-   MI("cartorio4",'Protocolo da Proposta','cartorio','protocolo',G,GC,'Escreva o e-mail de protocolo com o assunto obrigatório e os três anexos.',[3,5]),
-   CH("castelo3",'Sala de Defesa da Comissão','comissao','EDITAL','O Barão Bagunça se disfarçou de membro da comissão. Chefão final em EQUIPE, no quadro. Peça o código ao Mestre.',[1,2,3,4,5])]),
+  [B("estadio4",'Palco dos Modos','estadio','ppt',G,GC,'O Diretor Confuso não acha o modo certo de exibir. Mostre cada modo e o Slide Mestre.',['Diretor Confuso','#e63946','#ffd166'],PP),
+   B("atelie4",'Ateliê dos Objetos','atelie','pptobj',G,GC,'O Pintor Exagerado enche os slides de texto e cores. Mostre as boas práticas.',['Pintor Exagerado','#ff7b00','#14112a'],PP),
+   B("torre4",'Torre da Apresentação','torre','transicao',G,GC,'O Mágico das Transições confunde transição com animação. Ensaie a apresentação.',['Mágico das Transições','#7209b7','#4cc9f0'],PP,'apresenta'),
+   MI("campo4",'Camarim do Pitch','campo','pitch',G,GC,'Monte a sequência dos slides da defesa e escolha os recursos certos.',PP)]),
+ regiao("Bastidores",[
+  h(G,GC,'ia','Os slides estão prontos. Falta o mais difícil: apresentar com segurança e usar a IA sem cair nas armadilhas dela.'),
+  h(V,VC,'vilao','Vou fazer a IA inventar números e deixar vocês mudos na frente da comissão. HA HA HA!')],
+  [B("lab4",'Laboratório da IA','lab','ia',M,MC,'O Robô Alucinado inventa números sem fonte. Use a IA com senso crítico.',['Robô Alucinado','#4cc9f0','#ff006e'],[4,5]),
+   B("forja4",'Sala de Ensaio','forja','oratoria',G,GC,'O Fantasma do Branco apaga a sua fala na hora H. Mostre como se apresenta com segurança.',['Fantasma do Branco','#e0fbfc','#3a0ca3'],PP),
+   PO("portao4",'ENSAIO','Alto lá! O Mestre libera este portão depois que a sua equipe ensaiar a defesa uma vez.'),
+   CH("castelo4",'Teatro do Barão','palco','APLAUSO','O Barão Bagunça tomou o palco. Chefão em EQUIPE, no quadro. Peça o código ao Mestre.',[4])]),
  ]}
-LEVELS=[L1,L2,L3]
+# =============================== FASE 5 ===============================
+L5={"id":"mestre","nome":"Fase 5","titulo":"Mestre Final: A Sala da Comissão","aula":"Encontro 3 (final) e em casa • revisão de TODO o conteúdo","bioma":"noite","codigo":'MESTRE',
+ "ind":"Revisão geral: Word, competências, Excel, Outlook, PowerPoint e a entrega completa do Edital",
+ "fases":[
+ regiao("Arquivo dos Documentos",[
+  h(N,NC,'escritorio','O dia da entrega chegou. A comissão vai testar TUDO o que a Horizonte aprendeu. Cada região é uma revisão do curso.'),
+  h(G,GC,'word','Começamos pelos documentos e pelas competências da equipe. As perguntas agora misturam assuntos, como no trabalho de verdade.')],
+  [B("biblioteca5",'Revisão do Word','biblioteca','rev_word',G,GC,'O Guardião dos Documentos quer ver uma proposta impecável do começo ao PDF.',['Guardião dos Documentos','#2b579a','#ffd166'],[1]),
+   B("mercado5",'Revisão das Competências','mercado','rev_skills',M,MC,'A Recrutadora Exigente quer conhecer as suas skills e as suas fontes.',['Recrutadora Exigente','#9b5de5','#ffd166'],[5])]),
+ regiao("Cofre dos Números",[
+  h(M,MC,'planilha','Agora a planilha: contas, decisões, busca, gráficos e entrega. É a revisão completa do Excel.')],
+  [B("cofre5",'Revisão do Excel I','cofre','rev_excel1',M,MC,'O Auditor dos Cálculos confere cada fórmula da proposta.',['Auditor dos Cálculos','#217346','#ffd166'],[2]),
+   B("torre5",'Revisão do Excel II','torre','rev_excel2',M,MC,'A Fiscal da Planilha quer gráficos certos e uma planilha pronta para imprimir.',['Fiscal da Planilha','#33a06f','#14112a'],[2]),
+   MI("lab5",'Laboratório do Mestre','lab','mestre_excel',M,MC,'Escreva as fórmulas finais da proposta, sem ajuda do pergaminho.',[2])]),
+ regiao("Torre da Comunicação",[
+  h(G,GC,'email','E-mails, agenda, slides e a coerência da proposta inteira. A comissão vai olhar cada detalhe.')],
+  [B("porto5",'Revisão do Outlook','porto','rev_outlook',G,GC,'O Secretário da Comissão confere quem recebeu o quê, e como.',['Secretário da Comissão','#0078d4','#ffd166'],[3]),
+   B("estadio5",'Revisão do PowerPoint','estadio','rev_ppt',G,GC,'A Plateia Exigente quer uma defesa clara, bonita e no tempo.',['Plateia Exigente','#d24726','#ffd166'],[4]),
+   B("cofre5b",'Mesa da Comissão','cofre','edital',G,GC,'O Fiscal Implacável confere cada regra do edital. Mostre que a proposta está coerente.',['Fiscal Implacável','#14112a','#ffd166'],[5])]),
+ regiao("Sala da Comissão",[
+  h(G,GC,'ia','Hora do protocolo e da defesa final. Coerência entre Excel, Word, PowerPoint e e-mail vale ponto.'),
+  h(V,VC,'vilao','Última chance! Se UM valor estiver diferente entre os arquivos, a proposta inteira cai. HA HA HA!')],
+  [MI("cartorio5",'Protocolo da Proposta','cartorio','protocolo',G,GC,'Escreva o e-mail de protocolo com o assunto obrigatório e os três anexos.',[3,5]),
+   CH("castelo5",'Sala de Defesa da Comissão','comissao','EDITAL','O Barão Bagunça se disfarçou de membro da comissão. Chefão final em EQUIPE, no quadro. Peça o código ao Mestre.',[1,2,3,4,5])]),
+ ]}
+LEVELS=[L1,L2,L3,L4,L5]

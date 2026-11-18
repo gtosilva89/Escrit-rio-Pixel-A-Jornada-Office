@@ -41,6 +41,7 @@ const BIOMAS={
  campo:{g:['#3d8547','#4f9a55','#2f6e3b'],fl:['#ffd166','#ef476f','#ffffff'],agua:'#2b5d9c',brilho:'#5f9ad8',marg:'#c9b57a',cam:'#d2ad6d',camB:'#8f6f3e',arv:['#25683a','#3a9a55','#1d5230'],tronco:'#5b3a1e'},
  savana:{g:['#b59f45','#c7b45a','#9c8a35'],fl:['#e76f51','#f4a261','#ffffff'],agua:'#2a7f9e',brilho:'#5fb7d4',marg:'#e9d8a6',cam:'#e3c08a',camB:'#9a6b3a',arv:['#bc4b1b','#e07a2f','#8f3a15'],tronco:'#4a2c17'},
  neve:{g:['#dfe8f0','#eef4f8','#c9d6e3'],fl:['#a8dadc','#ffffff','#bde0fe'],agua:'#3a6ea5',brilho:'#a2d2ff',marg:'#b8c4d0',cam:'#a39074',camB:'#6b5a45',arv:['#1f4e4a','#2f6f68','#163b38'],tronco:'#3e2a1c'},
+ noite:{g:['#1d2b53','#24346a','#18234a'],fl:['#ffd166','#ffffff','#ff77a8'],agua:'#0b1026',brilho:'#ffd166',marg:'#5f574f',cam:'#c2a35a',camB:'#7a5c2e',arv:['#3a5a8c','#4f78b5','#2b4470'],tronco:'#1b1530'},
  cristal:{g:['#2a2440','#332b52','#221d36'],fl:['#5ec8ff','#c77dff','#ffd166'],agua:'#3a0ca3',brilho:'#7b2ff7',marg:'#4a3f6b',cam:'#5b4d8a',camB:'#2c2350',arv:['#4cc9f0','#a2e7ff','#3a86ff'],tronco:'#1b1530'}};
 let B=BIOMAS.campo;
 const base=document.createElement('canvas');base.width=W;base.height=H;const bg=base.getContext('2d');
@@ -146,7 +147,7 @@ function retrato(cor){const c=el('canvas',{width:16,height:16});spr(c.getContext
 function monstro(cor,olho){const c=el('canvas',{width:24,height:24});spr(c.getContext('2d'),['........kkkkkkkk........','......kkMMMMMMMMkk......','.....kMMMMMMMMMMMMk.....','....kMMMMMMMMMMMMMMk....','...kMMMLLMMMMMMLLMMMk...','...kMMMLOkMMMMLOkMMMk...','..kMMMMLkkMMMMLkkMMMMk..','..kMMMMMMMMMMMMMMMMMMk..','..kMMMMMMMMMMMMMMMMMMk..','..kMMMkwkwkwkwkwkMMMMk..','..kMMMMkkkkkkkkkkMMMMk..','..kMMMMMMMMMMMMMMMMMMk..','.kMMMMMMMMMMMMMMMMMMMMk.','.kMMMMMMMMMMMMMMMMMMMMk.','kMMkMMMMMMkMMMMMMMMkMMMk','kkk.kkkkkk.kkkkkkk..kkk.'],{M:cor,L:'#ffffff',O:olho,w:'#ffffff'},0,4);return c}
 function tabelaEl(rows){return el('div',{class:'tbw'},el('table',{class:'tb'},...rows.map((r,i)=>el('tr',{},...r.map(c=>el(i?'td':'th',{},c))))))}
 function arte(key){const c=el('canvas',{width:96,height:54,class:'arte'});const g=c.getContext('2d');const r=(x,y,w,h,col)=>R(x,y,w,h,col,g);
- const ceu=LV&&LV.bioma==='cristal'?'#1b1536':LV&&LV.bioma==='neve'?'#9fc5e8':LV&&LV.bioma==='savana'?'#f6bd60':'#8ecae6';r(0,0,96,54,ceu);r(0,40,96,14,B.g[0]);for(let i=0;i<96;i+=7)r(i,40,3,1,B.g[2]);
+ const ceu=LV&&LV.bioma==='noite'?'#0b1026':LV&&LV.bioma==='cristal'?'#1b1536':LV&&LV.bioma==='neve'?'#9fc5e8':LV&&LV.bioma==='savana'?'#f6bd60':'#8ecae6';r(0,0,96,54,ceu);r(0,40,96,14,B.g[0]);for(let i=0;i<96;i+=7)r(i,40,3,1,B.g[2]);
  const lin=(x,y,w,n,col)=>{for(let i=0;i<n;i++)r(x,y+i*3,w,1,col)};
  const caixa=(x,y,w,h,col,txt)=>{r(x,y,w,h,'#14112a');r(x+1,y+1,w-2,h-2,col)};
  switch(key){
@@ -322,7 +323,7 @@ function telaNiveis(){const cards=LEVELS.map((lv,i)=>{const lib=S.lib[lv.id];con
   return el('div',{class:'nv '+lv.id+(lib?'':' trava')},el('div',{class:'nvtop'},el('span',{class:'nvn'},`${i+1}. ${lv.nome.toUpperCase()}`),el('span',{class:'dica num'},`${fe}/${tot}`)),el('div',{class:'nvt'},lv.titulo),el('div',{class:'dica'},lv.aula),el('div',{class:'dica'},lv.ind),
    lib?el('div',{class:'acoes',style:'justify-content:flex-start'},el('button',{type:'button',on:{click:()=>entrarNivel(lv)}},nivelCompleto(lv)?'Rever ▶':fe?'Continuar ▶':'Jogar ▶'))
       :el('div',{class:'acoes',style:'justify-content:flex-start;align-items:center'},inp,el('button',{class:'sec',type:'button',on:{click:lib2}},'Liberar'),fb))});
- cena(el('h2',{},'Escolha o nível'),el('div',{class:'dica'},'Cada fase é uma etapa do curso (uma Situação de Aprendizagem) e tem 4 regiões que se encaixam num mapa só. Termine uma fase para liberar a próxima, ou peça o código ao Mestre quando a turma chegar lá.'),el('div',{class:'nvs'},...cards),
+ cena(el('h2',{},'Escolha o nível'),el('div',{class:'dica'},'Cada fase é uma etapa do curso (uma Situação de Aprendizagem) e tem de 2 a 4 regiões que se encaixam num mapa só. Termine uma fase para liberar a próxima, ou peça o código ao Mestre quando a turma chegar lá.'),el('div',{class:'nvs'},...cards),
   LV?el('div',{class:'acoes'},el('button',{class:'sec',type:'button',on:{click:fechar}},'Voltar ao mapa')):null)}
 function inicio(){let av=0;sujo=false;ultimoCod='';
  const avs=el('div',{class:'avs',role:'group','aria-label':'Escolha o herói'},...AVS.map((p,i)=>{const c=el('canvas',{width:8,height:11});spr(c.getContext('2d'),HERO,p,0,0);return el('button',{type:'button','aria-pressed':i===0?'true':'false','aria-label':'Herói '+(i+1),on:{click:()=>{av=i;avs.querySelectorAll('button').forEach((x,j)=>x.setAttribute('aria-pressed',j===i))}}},c)}));
@@ -337,7 +338,7 @@ function inicio(){let av=0;sujo=false;ultimoCod='';
   ultimoCod=cod.value.trim().toUpperCase();const lv=LEVELS.find(l=>l.id===S.lv)||LEVELS[0];entrarNivel(lv);sujo=false;toast('Bem-vindo de volta, '+S.nome+'!')};
  nome.addEventListener('keydown',e=>{if(e.key==='Enter')(cod.value.trim()?continuar:comecar)()});cod.addEventListener('keydown',e=>{if(e.key==='Enter')continuar()});
  cena(el('h2',{class:'tit-inicio'},'ESCRITÓRIO PIXEL'),el('div',{class:'dica'},'A JORNADA OFFICE • Senac PR • Turma 202600144'),
-  el('div',{class:'fala'},'O vírus Barão Bagunça desformatou a Horizonte Distribuidora às vésperas da entrega do Edital! Atravesse o Escritório Pixel em 3 fases e '+LEVELS.reduce((t,l)=>t+l.fases.reduce((a,f)=>a+Object.values(f.lugares).filter(x=>x.tipo==="batalha").length,0),0)+' batalhas, estude os pergaminhos e salve os documentos, as planilhas, os e-mails e os slides da empresa.'),
+  el('div',{class:'fala'},'O vírus Barão Bagunça desformatou a Horizonte Distribuidora às vésperas da entrega do Edital! Atravesse o Escritório Pixel em '+LEVELS.length+' fases e '+LEVELS.reduce((t,l)=>t+l.fases.reduce((a,f)=>a+Object.values(f.lugares).filter(x=>x.tipo==="batalha").length,0),0)+' batalhas, estude os pergaminhos e salve os documentos, as planilhas, os e-mails e os slides da empresa.'),
   el('div',{class:'dica'},'Primeira vez? Escolha seu herói, digite seu nome e clique em Nova aventura. Já jogou? Digite o MESMO nome e o código que você anotou.'),avs,nome,cod,fb,
   el('div',{class:'acoes'},el('button',{class:'sec',type:'button',on:{click:areaProfessor}},'Área do Professor 🔒'),el('button',{class:'sec',type:'button',on:{click:continuar}},'Continuar com código ▶'),el('button',{type:'button',on:{click:comecar}},'Nova aventura ▶')));setTimeout(()=>nome.focus(),50)}
 $('btnFicha').addEventListener('click',ficha);$('btnSalvar').addEventListener('click',()=>S&&salvarCodigo());$('btnSair').addEventListener('click',()=>S&&sair());$('btnFx').addEventListener('click',()=>{SOM.fx=!SOM.fx;somSalvar();botoesSom();sfx('clique')});$('btnMus').addEventListener('click',()=>{SOM.mus=!SOM.mus;somSalvar();botoesSom();musica()});botoesSom();$('btnNiveis').addEventListener('click',()=>S&&telaNiveis());$('btnVisao').addEventListener('click',()=>LV&&alternarVisao());
